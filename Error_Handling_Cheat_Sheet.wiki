@@ -64,21 +64,23 @@ The article show how to configure a global error handler at configuration level 
 
 [[File:ERROR_HANDLING_CHEAT_SHEET_OBJECTIVE.png|]]
 
-About the error logging operation itself, the [[Logging_Cheat_Sheet|logging cheat sheet]] should be used.
+As most of the recent application topology are "API based", we assume here that the backend expose only REST API and do not contains any user interface content.
+
+About the error logging operation itself, the [[Logging_Cheat_Sheet|logging cheat sheet]] should be used. This article will focus on the error handling part
 
 = Proposition =
 
-For each technologies, a configuration will be proposed with configuration and code snippet.
+For each technologies, a setup will be proposed with configuration and code snippet.
 
 == Java classic web application ==
 
 For this kind of application, a global error handler can be configured at '''web.xml''' deployment descriptor level. 
 
-We propose here a configuration that can be used from Servlet specification version 2.5 and above.
+We propose here a configuration that can be used from Servlet specification ''version 2.5'' and above.
 
-With this configuration, any unexpected error will cause a redirection to the page '''error.jsp''' in which the error will be traced and a generic error message will be returned.
+With this configuration, any unexpected error will cause a redirection to the page '''error.jsp''' in which the error will be traced and a generic error response will be returned.
 
-'''web.xml''' file:
+Configuration of the redirection into the '''web.xml''' file:
 
 <syntaxhighlight lang="xml">
 <?xml version="1.0" encoding="UTF-8"?>
@@ -92,7 +94,7 @@ With this configuration, any unexpected error will cause a redirection to the pa
 </web-app>
 </syntaxhighlight>
 
-'''error.jsp''' file:
+Content of the '''error.jsp''' file:
 
 <syntaxhighlight lang="java">
 <%@ page language="java" isErrorPage="true" contentType="application/json; charset=UTF-8" pageEncoding="UTF-8"%>
@@ -125,7 +127,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
 /**
- * Global error handler in charge of returning a generic error in case of unexpected error situation.
+ * Global error handler in charge of returning a generic response in case of unexpected error situation.
  */
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler {
@@ -152,13 +154,11 @@ References:
 * http://www.baeldung.com/exception-handling-for-rest-with-spring
 * https://www.toptal.com/java/spring-boot-rest-api-error-handling
 
-
-
 == ASP.NET Core web application ==
 
 With ASP.NET Core, you can define a global error handler by indicating that the exception handler is a dedicated API Controller. 
 
-API Controller dedicated to the error handling:
+Content of the API Controller dedicated to the error handling:
 
 <syntaxhighlight lang="c#">
 using Microsoft.AspNetCore.Authorization;
@@ -209,7 +209,7 @@ namespace MyProject.Controllers
 }
 </syntaxhighlight>
 
-Configuration of the application to use the dedicated error handling API controller in the application '''Startup.cs''' configuration file::
+Definition in the application '''Startup.cs''' file of the mapping of the exception handler to the dedicated error handling API controller:
 
 <syntaxhighlight lang="c#">
 using Microsoft.AspNetCore.Builder;
@@ -339,7 +339,7 @@ namespace MyProject.Security
 }
 </syntaxhighlight>
 
-Registration of the both handlers in the application '''WebApiConfig.cs''' configuration file:
+Registration of the both handlers in the application '''WebApiConfig.cs''' file:
 
 <syntaxhighlight lang="c#">
 using MyProject.Security;
@@ -352,7 +352,7 @@ namespace MyProject
     {
         public static void Register(HttpConfiguration config)
         {
-            //Register global error logging and handling handlers
+            //Register global error logging and handling handlers in first
             config.Services.Replace(typeof(IExceptionLogger), new GlobalErrorLogger());
             config.Services.Replace(typeof(IExceptionHandler), new GlobalErrorHandler());
             //Rest of the configuration
@@ -368,21 +368,15 @@ References:
 * https://exceptionnotfound.net/the-asp-net-web-api-exception-handling-pipeline-a-guided-tour/
 
 
-
-
-
-
 = Sources of the prototype =
 
-<pre>
-Add pointer to the public GitHub repository on which the source code of POC is hosted.
-</pre>
+The source code of all the sandbox projects created to find the right setup to use is stored into this GitHub repository:
+
+https://github.com/righettod/poc-error-handling
 
 = Authors and Primary Editors =
 
-<pre>
-Add your name and email.
-</pre>
+Dominique Righetto - dominique.righetto@owasp.org 
 
 = Other Cheatsheets =
 
