@@ -13,13 +13,15 @@ Error handling is a part of the overwall security of an application. Except in m
 
 So, if errors are not well handled then it can highly facilitate the work for an attacker into this initial phase that is very important for the rest of the whole attack.
 
-This [http://blog.cipher.com/the-6-primary-phases-of-penetration-testing link] provide an example of description of the differents phases of an attack.
+The following link provide an example of description of the differents phases of an attack: 
+
+http://blog.cipher.com/the-6-primary-phases-of-penetration-testing
 
 = Context =
 
 Issues at error handling level can reveal many information about the target and can be also used to identify injection point into the target's features.
 
-Example of disclosure of technologies stack, here Struts2 and Tomcat version, via an exception rendered to the user:
+Below is an example of disclosure of technologies stack, here Struts2 and Tomcat version, via an exception rendered to the user:
 
 <pre>
 HTTP Status 500 - For input string: "null"
@@ -50,7 +52,7 @@ java.lang.NumberFormatException: For input string: "null"
 note: The full stack trace of the root cause is available in the Apache Tomcat/7.0.56 logs.
 </pre>
 
-Example of disclosure of SQL query error, along the site installation path, that is useful to identify injection point:
+Below is an example of disclosure of SQL query error, along the site installation path, that is useful to identify injection point:
 
 <pre>
 Warning: odbc_fetch_array() expects parameter 1 to be resource, boolean given in D:\app\index_new.php on line 188
@@ -60,17 +62,19 @@ The [[Testing_Information_Gathering|OWASP Testing Guide]] provide differents tec
 
 = Objective =
 
-The article show how to configure a global error handler at configuration level when possible otherwise at code level, in differents technologies, in order to ensure that if an unexpected error occur then a generic message is returned by the application but the error is traced on server side for investigation.
+The article show how to configure a global error handler at configuration level when possible otherwise at code level, in differents technologies, in order to ensure that if an unexpected error occur then a generic response is returned by the application but the error is traced on server side for investigation.
 
-[[File:ERROR_HANDLING_CHEAT_SHEET_OBJECTIVE.png|]]
+The following schema show the target approach:
 
-As most of the recent application topology are "API based", we assume here that the backend expose only REST API and do not contains any user interface content.
+[[File:ERROR_HANDLING_CHEAT_SHEET_OBJECTIVE.png|ERROR_HANDLING_CHEAT_SHEET_OBJECTIVE.png|center]]
 
-About the error logging operation itself, the [[Logging_Cheat_Sheet|logging cheat sheet]] should be used. This article will focus on the error handling part
+As most of the recent application topology are ''API based'', we assume in this article that the backend expose only a REST API and do not contains any user interface content.
+
+About the error logging operation itself, the [[Logging_Cheat_Sheet|logging cheat sheet]] should be used, this article will focus on the error handling part.
 
 = Proposition =
 
-For each technologies, a setup will be proposed with configuration and code snippet.
+For each technology, a setup will be proposed with configuration and code snippet.
 
 == Java classic web application ==
 
@@ -78,7 +82,7 @@ For this kind of application, a global error handler can be configured at '''web
 
 We propose here a configuration that can be used from Servlet specification ''version 2.5'' and above.
 
-With this configuration, any unexpected error will cause a redirection to the page '''error.jsp''' in which the error will be traced and a generic error response will be returned.
+With this configuration, any unexpected error will cause a redirection to the page '''error.jsp''' in which the error will be traced and a generic response will be returned.
 
 Configuration of the redirection into the '''web.xml''' file:
 
@@ -114,7 +118,7 @@ response.setStatus(200);
 
 With SpringMVC or SpringBoot, you can define a global error handler by simply implementing this kind of class into your project. 
 
-We indicate, via the annotation [https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/bind/annotation/ExceptionHandler.html ExceptionHandler], to the handler to act when any exception extending the class ''java.lang.Exception'' is throwed by the application.
+We indicate to the handler, via the annotation [https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/bind/annotation/ExceptionHandler.html @ExceptionHandler],  to act when any exception extending the class ''java.lang.Exception'' is throwed by the application.
 
 <syntaxhighlight lang="java">
 import net.minidev.json.JSONObject;
@@ -226,7 +230,7 @@ namespace MyProject
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             //First we configure the error handler middleware!
-            //We enable the global error handler in others environment that DEV because debug page are useful during implementation
+            //We enable the global error handler in others environments than DEV because debug page are useful during implementation
             //See https://docs.microsoft.com/en-us/aspnet/core/fundamentals/environments?view=aspnetcore-2.1 for technical details about Environment configuration
             if (env.IsDevelopment())
             {
@@ -254,7 +258,7 @@ References:
 
 == ASP.NET Web API web application ==
 
-With ASP.NET Web API, you can define and register handlers in order to trace and handle any error that occurs in the application.
+With ASP.NET Web API (from the standard .NET framework and not from the .NET Core framework), you can define and register handlers in order to trace and handle any error that occurs in the application.
 
 Definition of the handler for the tracing of the error details:
 
@@ -366,7 +370,6 @@ namespace MyProject
 References:
 
 * https://exceptionnotfound.net/the-asp-net-web-api-exception-handling-pipeline-a-guided-tour/
-
 
 = Sources of the prototype =
 
