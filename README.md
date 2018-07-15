@@ -33,11 +33,11 @@ curl -v http://localhost:8080/greeting
 Project: *aspnet-core-web-application*
 
 ```
-curl -v http://localhost:[PORT]]/api/values
+curl -v http://localhost:[PORT]/api/values
 ```
 
 Project: *aspnet-webapi-web-application*
 
 ```
-curl -v http://localhost:[PORT]]/api/values
+curl -v http://localhost:[PORT]/api/values
 ```
